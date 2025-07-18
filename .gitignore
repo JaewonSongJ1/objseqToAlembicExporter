@@ -1,11 +1,21 @@
 # Build directories
 build/
 out/
+bin/
+Debug/
+Release/
+
+# Deployment folder
+deploy/
 
 # Visual Studio files
 .vs/
 *.vcxproj.user
 *.vcxproj.filters
+*.sln.docstates
+*.suo
+*.user
+*.userosscache
 *.sln.docstates
 
 # Compiled binaries
@@ -15,20 +25,25 @@ out/
 *.obj
 *.pdb
 *.ilk
+*.exp
 
 # CMake generated files
 CMakeFiles/
 CMakeCache.txt
 cmake_install.cmake
 Makefile
+*.cmake
 
 # vcpkg
 vcpkg_installed/
+packages/
 
 # Temporary files
 *.tmp
 *.temp
 *~
+*.bak
+*.orig
 
 # Logs
 *.log
@@ -41,9 +56,19 @@ vcpkg_installed/
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # IDE files
 .vscode/
 .idea/
 *.swp
 *.swo
+
+# Test files
+test_obj/
+test_output/
+*.abc
+
+# User-specific configuration
+config.local
+.env.local

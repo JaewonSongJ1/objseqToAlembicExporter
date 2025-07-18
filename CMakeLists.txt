@@ -23,7 +23,17 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 if(MSVC)
     add_compile_options(/W4)
     add_compile_definitions(_CRT_SECURE_NO_WARNINGS)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+    
+    # Set runtime library based on triplet
+    if(VCPKG_TARGET_TRIPLET MATCHES "static")
+        # Static linking: use static runtime
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+        message(STATUS "Using static runtime library for static build")
+    else()
+        # Dynamic linking: use dynamic runtime  
+        set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+        message(STATUS "Using dynamic runtime library for dynamic build")
+    endif()
 else()
     add_compile_options(-Wall -Wextra -Wpedantic)
 endif()

@@ -1,6 +1,7 @@
 @echo off
 REM 
-REM OBJ Sequence to Alembic Cache Converter - Build Script
+REM OBJ to Alembic Converter - Development Build Script
+REM Fast build with dynamic linking for development/debugging
 REM 
 REM Author: Jaewon Song
 REM Company: Dexter Studios
@@ -8,9 +9,10 @@ REM Position: R^&D Director
 REM
 
 echo =================================================
-echo OBJ to Alembic Converter Build Script
+echo OBJ to Alembic Converter - Development Build
 echo Author: Jaewon Song (Dexter Studios R^&D Director)
 echo =================================================
+echo [INFO] Building development version (dynamic linking)
 echo.
 
 REM Check if VCPKG_ROOT environment variable is set
@@ -28,7 +30,7 @@ if "%VCPKG_ROOT%"=="" (
     echo    - Current session: set VCPKG_ROOT=C:\vcpkg
     echo    - Permanent: Add VCPKG_ROOT=C:\vcpkg to system environment variables
     echo.
-    echo 3. Run this script again: build.bat
+    echo 3. Run this script again: build_dev.bat
     echo.
     pause
     exit /b 1
@@ -68,23 +70,24 @@ if not exist "src\main.cpp" (
     echo Please ensure the project structure is correct:
     echo   src\main.cpp
     echo   CMakeLists.txt
-    echo   build.bat
+    echo   build_dev.bat
     echo.
     pause
     exit /b 1
 )
 
-REM Create build directory
-echo [INFO] Setting up build directory...
+REM Create build directory for development
+echo [INFO] Setting up development build directory...
 if not exist "build" mkdir build
-cd build
+if not exist "build\dev" mkdir build\dev
+cd build\dev
 
-REM Configure with CMake
-echo [INFO] Configuring with CMake...
-cmake .. ^
+REM Configure with CMake for development (dynamic linking)
+echo [INFO] Configuring development build (dynamic linking)...
+cmake ..\.. ^
     -DCMAKE_TOOLCHAIN_FILE="%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" ^
     -DVCPKG_TARGET_TRIPLET=x64-windows ^
-    -DCMAKE_BUILD_TYPE=Release ^
+    -DCMAKE_BUILD_TYPE=Debug ^
     -G "Visual Studio 17 2022" ^
     -A x64
 
@@ -100,9 +103,9 @@ if errorlevel 1 (
     exit /b 1
 )
 
-REM Build the project
-echo [INFO] Building project...
-cmake --build . --config Release
+REM Build the project in Debug mode
+echo [INFO] Building development version...
+cmake --build . --config Debug
 
 if errorlevel 1 (
     echo [ERROR] Build failed
@@ -110,16 +113,16 @@ if errorlevel 1 (
     exit /b 1
 )
 
-cd ..
+cd ..\..
 
 echo.
 echo =================================================
-echo [SUCCESS] Build completed successfully!
+echo [SUCCESS] Development build completed!
 echo.
-echo Executable: build\bin\Release\obj2abc.exe
+echo Executable: build\dev\bin\Debug\obj2abc.exe
+echo Note: This version requires DLL files in the same directory
 echo.
-echo Usage example:
-echo   obj2abc.exe -input "path\to\obj\sequence" -output "output.abc" -fps 24
+echo For deployment build, use: build_release.bat
 echo =================================================
 echo.
 
