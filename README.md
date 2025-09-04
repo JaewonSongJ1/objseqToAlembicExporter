@@ -233,3 +233,62 @@ R&D Director, Dexter Studios
 
 ---
 *Built with ❤️ for the VFX community*
+
+---
+
+## GUI (PyQt5) — OBJ Sequence to Alembic Cache Exporter
+
+본 저장소에는 C++ CLI(`obj2abc.exe`)와 함께 간단한 GUI가 포함됩니다. GUI는 **OBJ to Alembic** 기능만을 제공하며, 다음 경로와 구조를 가정합니다.
+
+```text
+<project_root>/
+├─ ui/
+│  └─ obj_seq_to_abc_ui.py        # GUI 소스 (PyQt5)
+├─ deploy/
+│  ├─ obj2abc.exe                 # C++ 변환기 (필수)
+│  └─ OBJSeqToAlembicUI.exe       # (선택) 빌드된 GUI 실행파일
+└─ example/
+   └─ obj_sequence/               # 샘플 OBJ 시퀀스 (~120 files)
+```
+
+### 1) GUI 실행 (소스)
+```bat
+cd <project_root>
+pip install PyQt5
+python .\ui\obj_seq_to_abc_ui.py
+```
+
+- 실행 시 GUI는 자동으로 `<project_root>\deploy\obj2abc.exe` 를 탐색합니다. 없으면 오류를 표시합니다.
+- 변환 명령은 CLI와 동일하게 동작합니다 (입력/출력/FPS 설정 후 **Convert to Alembic**).
+
+### 2) GUI 실행파일(one-file) 빌드 (Windows)
+PyInstaller 기반 단일 실행파일(one-file) 빌드 스크립트를 제공합니다.
+
+```bat
+cd <project_root>
+build_win_pyinstaller.bat
+```
+
+- 결과물: `deploy/OBJSeqToAlembicUI.exe`
+- 같은 폴더 `deploy/` 안에 **obj2abc.exe** 가 있어야 GUI가 동작합니다.
+
+### 3) Quick Start (Example 데이터로 테스트)
+예제 OBJ 시퀀스가 `<project_root>\example\obj_sequence` 에 있다고 가정합니다.
+
+- **Input Folder**: `<project_root>\example\obj_sequence`
+- **Output File**: `<project_root>\deploy\example_export.abc`
+- **FPS**: 24 (또는 필요 시 변경)
+- **Convert to Alembic** 클릭 → 변환 로그/진행 상태가 하단에 표시됩니다.
+
+### 4) 명령행(CLI)와의 대응
+GUI는 내부적으로 다음과 같은 CLI를 호출합니다 (예시):  
+```bat
+obj2abc.exe -input "<obj_folder>" -output "<output.abc>" -fps 24
+```
+
+### 5) 문제 해결
+- **UI가 바로 종료됨**: `deploy/obj2abc.exe` 존재/실행 권한 확인, `Output File` 경로 유효성 확인
+- **OBJ가 감지되지 않음**: 입력 폴더 내 `.obj` 확장자 확인, 파일명 순서 및 개수 확인
+- **FPS 불일치 재생**: DCC(Maya 등) 씬의 FPS를 export에 사용한 FPS와 동일하게 설정
+
+> CLI 사용법과 파라미터 상세는 아래 **Usage** 섹션을 참고하세요.
